@@ -1,9 +1,6 @@
 function render(element, container) {
   const { type, props } = element
-  const dom =
-    type === "TEXT_ELEMENT"
-      ? document.createTextNode("")
-      : document.createElement(type)
+  const dom = document.createElement(type)
 
   //handle props
   Object.keys(props).forEach((key) => {
@@ -12,7 +9,17 @@ function render(element, container) {
     }
   })
   //handle children
-  props.children && props.children.forEach(child => this.render(child, dom))
+  const { children } = props
+  if (children) {
+    if (Array.isArray(children)) {
+      children.forEach(child => render(child, dom))
+    } else if (typeof children === "string") {
+      const node = document.createTextNode(children)
+      dom.appendChild(node)
+    } else {
+      render(children, dom)
+    }
+  }
 
   container.appendChild(dom)
 }

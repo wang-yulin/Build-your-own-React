@@ -1,25 +1,26 @@
-function createElement(type, props, ...children) {
+function createElement(type, config, children) {
+
+  const props = { ...config }
+
+  const childrenLength = arguments.length - 2
+  if (childrenLength === 1) {
+    props.children = children
+  } else if (childrenLength > 1) {
+    const childArray = Array(childrenLength)
+    for (let i = 0; i < childArray.length; i++) {
+      childArray[i] = arguments[i + 2]
+    }
+    props.children = childArray
+  }
+
   return {
     type,
-    props: {
-      ...props,
-      children: children.map(child => {
-        return typeof child === "object" ? child : this.createTextElement(child)
-      }),
-    }
+    props
   }
 }
-function createTextElement(text) {
-  return {
-    type: "TEXT_ELEMENT",
-    props: {
-      nodeValue: text,
-    }
-  }
-}
+
 const React = {
   createElement,
-  createTextElement
 }
 
 export { React } 
